@@ -1,2 +1,12 @@
 .idea
 .env
+
+#
+tmp/
+
+node_modules
+
+
+bin/
+
+logs/*.log
