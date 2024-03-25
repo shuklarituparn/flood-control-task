@@ -1,6 +1,8 @@
 package flood_control
 
-import "context"
+import (
+	"context"
+)
 
 // FloodControl интерфейс, который нужно реализовать.
 // Рекомендуем создать директорию-пакет, в которой будет находиться реализация.

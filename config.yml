@@ -1,0 +1,19 @@
+redis:
+  address: 'redis:6379'
+  password: ''
+  db: 0
+rate_limiter:
+  default_rate_limit:
+    rate: 8
+    window_seconds: 1s
+  user_types:
+    normal:
+      key_prefix: 'rl:normal'
+      rate_limit:
+        rate: 5
+        window_seconds: 1s
+    premium:
+      key_prefix: 'rl:premium'
+      rate_limit:
+        rate: 10
+        window_seconds: 1s
