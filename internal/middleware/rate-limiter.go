@@ -8,11 +8,13 @@ import (
 	"net/http"
 	"strconv"
 	"task/internal/config"
+	"task/internal/logger"
 	redis_impelementation "task/internal/redis"
 )
 
 func RateLimiterMiddleware(client *redis.Client, Config *config.RateLimiterConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fileLogger := logger.SetupLogger()
 		userIDfromUrl := c.Query("userID")
 		userTypefromUrl := c.Query("userType")
 		fmt.Println(userIDfromUrl)
@@ -23,6 +25,7 @@ func RateLimiterMiddleware(client *redis.Client, Config *config.RateLimiterConfi
 			check, err := DefaultSlidingWindow.Check(context.Background(), 23)
 			if err != nil {
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				fileLogger.Printf("server error: %v", err.Error())
 				return
 			}
 			if !check {
@@ -35,10 +38,12 @@ func RateLimiterMiddleware(client *redis.Client, Config *config.RateLimiterConfi
 			DefaultSlidingWindow := redis_impelementation.NewSlidingWindow(client, "default", userID, float64(Config.RateLimiter.DefaultRateLimit.Rate), Config.RateLimiter.DefaultRateLimit.WindowSeconds)
 			check, err := DefaultSlidingWindow.Check(context.Background(), userID)
 			if err != nil {
+				fileLogger.Printf("server error: %v", err.Error())
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
 			if !check {
+
 				c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"error": "Rate limit exceeded"})
 				return
 			}
@@ -48,6 +53,7 @@ func RateLimiterMiddleware(client *redis.Client, Config *config.RateLimiterConfi
 			NormalSlidingWindow := redis_impelementation.NewSlidingWindow(client, Config.RateLimiter.UserTypes["normal"].KeyPrefix, userID, float64(Config.RateLimiter.UserTypes["normal"].RateLimit.Rate), Config.RateLimiter.UserTypes["normal"].RateLimit.WindowSeconds)
 			check, err := NormalSlidingWindow.Check(context.Background(), userID)
 			if err != nil {
+				fileLogger.Printf("server error: %v", err.Error())
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
@@ -61,6 +67,7 @@ func RateLimiterMiddleware(client *redis.Client, Config *config.RateLimiterConfi
 			PremiumSlidingWindow := redis_impelementation.NewSlidingWindow(client, Config.RateLimiter.UserTypes[userTypefromUrl].KeyPrefix, userID, float64(Config.RateLimiter.UserTypes[userTypefromUrl].RateLimit.Rate), Config.RateLimiter.UserTypes[userTypefromUrl].RateLimit.WindowSeconds)
 			check, err := PremiumSlidingWindow.Check(context.Background(), userID)
 			if err != nil {
+				fileLogger.Printf("server error: %v", err.Error())
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}

@@ -4,17 +4,19 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
-	"log"
 	config2 "task/internal/config"
 	"task/internal/handlers"
+	"task/internal/logger"
 	"task/internal/middleware"
 )
 
 func main() {
-
+	gin.SetMode(gin.ReleaseMode)
+	fileLogger := logger.SetupLogger()
 	config, err := config2.LoadConfig("config.yml")
 	if err != nil {
 		fmt.Println(err)
+		fileLogger.Printf("error opening config file: %v", err)
 	}
 
 	client := redis.NewClient(&redis.Options{
@@ -28,6 +30,6 @@ func main() {
 
 	router.GET("/persik", handlers.PersikHandler)
 	if err := router.Run(":8090"); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+		fileLogger.Fatalf("Failed to start server: %v", err)
 	}
 }
