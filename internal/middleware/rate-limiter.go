@@ -21,7 +21,7 @@ func RateLimiterMiddleware(client *redis.Client, Config *config.RateLimiterConfi
 		userID, _ := strconv.ParseInt(userIDfromUrl, 10, 64)
 
 		if userIDfromUrl == "" && userTypefromUrl == "" {
-			DefaultSlidingWindow := redis_impelementation.NewSlidingWindow(client, "default", 23, float64(Config.RateLimiter.DefaultRateLimit.Rate), Config.RateLimiter.DefaultRateLimit.WindowSeconds)
+			DefaultSlidingWindow := redis_impelementation.NewSlidingWindow(client, "rl:default", 23, float64(Config.RateLimiter.DefaultRateLimit.Rate), Config.RateLimiter.DefaultRateLimit.WindowSeconds)
 			check, err := DefaultSlidingWindow.Check(context.Background(), 23)
 			if err != nil {
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -35,7 +35,7 @@ func RateLimiterMiddleware(client *redis.Client, Config *config.RateLimiterConfi
 			c.Next()
 		}
 		if userIDfromUrl != "" && userTypefromUrl == "" {
-			DefaultSlidingWindow := redis_impelementation.NewSlidingWindow(client, "default", userID, float64(Config.RateLimiter.DefaultRateLimit.Rate), Config.RateLimiter.DefaultRateLimit.WindowSeconds)
+			DefaultSlidingWindow := redis_impelementation.NewSlidingWindow(client, "rl:default", userID, float64(Config.RateLimiter.DefaultRateLimit.Rate), Config.RateLimiter.DefaultRateLimit.WindowSeconds)
 			check, err := DefaultSlidingWindow.Check(context.Background(), userID)
 			if err != nil {
 				fileLogger.Printf("server error: %v", err.Error())
