@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
+	"os"
 	config2 "task/internal/config"
 	"task/internal/handlers"
 	"task/internal/logger"
@@ -24,12 +25,17 @@ func main() {
 		Password: config.Redis.Password,
 		DB:       config.Redis.DB,
 	})
+	port := os.Getenv("APP_PORT")
 	router := gin.Default()
-
+	router.LoadHTMLGlob("./templates/*")
+	router.Static("/static", "./static")
+	router.Static("/uploads", "./uploads")
+	router.NoRoute(handlers.NoRouteHandler)
+	router.GET("/", handlers.WelcomeHandler)
 	router.Use(middleware.RateLimiterMiddleware(client, config))
 
 	router.GET("/persik", handlers.PersikHandler)
-	if err := router.Run(":8090"); err != nil {
+	if err := router.Run(":" + port); err != nil {
 		fileLogger.Fatalf("Failed to start server: %v", err)
 	}
 }

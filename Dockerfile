@@ -6,5 +6,5 @@ COPY . .
 WORKDIR /app/cmd/main
 RUN CGO_ENABLED=0 GOOS=linux go build -o main
 WORKDIR /app
-EXPOSE 8090
+EXPOSE $APP_PORT
 CMD ["./cmd/main/main"]
