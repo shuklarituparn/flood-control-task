@@ -8,6 +8,8 @@
 
 Сервис доступен здесь: 
 
+ - `https://rate-limiter.rtprnshukla.ru/` (открыт, чтобы увидеть персика)
+
 `https://rate-limiter.rtprnshukla.ru/persik/userID=<int64>&userType=<normal/premium>`
 
 ---
