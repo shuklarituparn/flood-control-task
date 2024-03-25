@@ -6,7 +6,9 @@
 
 Создал распределенный rate-limiter в go, который поддерживает переменные лимиты скорости.
 
-Сервис доступен здесь: `https://rate-limiter.rtprnshukla.ru/`
+Сервис доступен здесь: 
+
+`https://rate-limiter.rtprnshukla.ru/persik/userID=<int64>&userType=<normal/premium>`
 
 ---
 
@@ -48,6 +50,12 @@ rate_limiter:
 
 ```
 
+`https://rate-limiter.rtprnshukla.ru/persik/userID=<int64>&userType=<normal/premium>`
+
+- Eсли локально
+`http://localhost:8080/persik/userID=<int64>&userType=<normal/premium>`
+
+- Usertype необходим для определения количества запросов
 - По умолчанию пользователю предоставляется rate 8, а затем window 1 секунда
 - Сервис также поддерживает обычных пользователей с другим тарифом
 - Сервис также поддерживает премиум-пользователей с другим тарифом
