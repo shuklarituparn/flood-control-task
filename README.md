@@ -92,6 +92,8 @@ rate_limiter:
 
 `вы также можете использовать curl для тестирования сервиса`
 
+![Screenshot from 2024-03-26 11-10-01](https://github.com/shuklarituparn/Conversion-Microservice/assets/66947051/bbaf8306-e305-491b-a7a4-74a24422aefd)
+
 ---
 
 ### Что надо было сделать
